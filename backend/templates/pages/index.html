@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}
+  UpBuh
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="container mt-4">
+    <form method="GET" class="mb-4">
+        <input type="text" name="search" class="form-control" placeholder="Поиск услуг" value="{{ request.GET.search }}">
+    </form>
+    
+    {% if product_list %}
+      <div class="row g-4">
+          {% for product in product_list %}
+            {% include "includes/product_card.html" %}
+          {% endfor %}
+      </div>
+      
+      {% include "includes/paginator.html" %}
+      
+    {% else %}
+      <div class="alert alert-warning text-center mt-4" role="alert">
+        Ничего не найдено. Попробуйте другой запрос.
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

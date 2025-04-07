@@ -1,0 +1,94 @@
+{% load static %}
+
+<style>
+.custom-product-card {
+    background-color: #3c4b42;
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    width: 100%;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 470px;
+}
+.custom-product-icon {
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+    border-radius: 10px;
+}
+.custom-product-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.custom-product-info {
+    flex-grow: 1;
+    min-height: 150px;
+    margin: 5px;
+}
+.custom-product-info h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+.custom-product-info p {
+    margin: 5px 0;
+}
+.custom-info-block {
+    margin-top: 10px;
+}
+.custom-product-actions {
+    margin-top: auto;
+}
+.custom-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    margin-top: 10px;
+}
+.custom-btn-primary {
+    background-color: #b34e78;
+    color: white;
+    border: none;
+}
+.custom-btn-secondary {
+    background-color: transparent;
+    border: 1px solid white;
+    color: white;
+}
+</style>
+
+<div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 d-flex justify-content-center">
+    <div class="custom-product-card">
+        <div class="custom-product-icon">
+            <img src="{{ product.image.url }}" alt="Фотография">
+        </div>
+        <div class="custom-product-info">
+            <h3>{{ product.title }}</h3>
+            <p>от {{ product.price }} ₽</p>
+            <div class="custom-info-container">
+                {% if product.work_format %}
+                    <div class="custom-info-block">
+                        <p><strong>Формат работы:</strong></p>
+                        <p>{{ product.work_format }}</p>
+                    </div>
+                {% endif %}
+                {% if product.industry %}
+                    <div class="custom-info-block">
+                        <p><strong>Сфера деятельности:</strong></p>
+                        <p>{{ product.industry }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="custom-product-actions">
+            <a href="{% url 'cart:add_to_cart' product.id %}" class="custom-btn custom-btn-primary">Мне это интересно</a>
+            <a href="{% url 'pages:product_detail' product.id %}" class="custom-btn custom-btn-secondary">Подробнее</a>
+        </div>
+    </div>
+</div>
