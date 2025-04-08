@@ -1,7 +1,0 @@
-from django.apps import AppConfig
-
-
-class ProductComponentsConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'product_components'
-    verbose_name = 'Компоненты товаров'

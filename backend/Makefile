@@ -1,4 +1,4 @@
-MANAGE_FILE_PATH=backend/manage.py
+MANAGE_FILE_PATH=manage.py
 
 
 run:

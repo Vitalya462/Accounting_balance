@@ -1,5 +1,3 @@
-from os import environ
-
 from pathlib import Path
 from datetime import timedelta
 
@@ -29,8 +27,6 @@ INSTALLED_APPS = [
     'django_bootstrap5',
     'minio_storage',
     'cart',
-    'product_components',
-    'products',
     'pages',
 ]
 

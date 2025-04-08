@@ -2,12 +2,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 
-from products.models import Product
 
-from .models import Cart, CartItem
-
-
-@login_required
 def cart_view(request) -> HttpResponse:
     """
     Отображение страницы корзины пользователя.
@@ -23,7 +18,6 @@ def cart_view(request) -> HttpResponse:
     })
 
 
-@login_required
 def add_to_cart(request, product_id: int) -> HttpResponseRedirect:
     """
     Добавляет товар в корзину.
@@ -44,7 +38,6 @@ def add_to_cart(request, product_id: int) -> HttpResponseRedirect:
     return redirect('/')
 
 
-@login_required
 def remove_from_cart(request, product_id: int) -> HttpResponseRedirect:
     """
     Удаляет товар из корзины.
@@ -55,7 +48,6 @@ def remove_from_cart(request, product_id: int) -> HttpResponseRedirect:
     return redirect('cart:cart_view')
 
 
-@login_required
 def update_cart(request, product_id: int, action: str) -> HttpResponseRedirect:
     """
     Увеличивает или уменьшает количество товара в корзине.

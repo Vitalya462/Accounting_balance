@@ -1,9 +1,7 @@
+from datetime import datetime
+
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView
-
-from cart.models import CartItem
-from products.models import Product
-from products.enums import ProductStatus
 
 
 def page_not_found(request, exception):
@@ -16,6 +14,24 @@ def server_error(request):
 
 def csrf_failure(request, reason=''):
     return render(request, 'errors/403csrf.html', status=403)
+
+
+services = [
+    {
+        'id': 1,
+        'title': 'Первая услуга',
+        'description': 'Описание первой услуги',
+        'image': '',
+        'price': 1234,
+        'created_at': datetime.now(),
+        'work_format': None,
+        'industry': None,
+        'status': 'A',
+        'code': 123,
+    }
+]
+
+bid = []
 
 
 class IndexListView(ListView):
@@ -38,12 +54,11 @@ class IndexListView(ListView):
         на основе поискового запроса
     """
 
-    model = Product
     template_name = "pages/index.html"
     context_object_name = "product_list"
     paginate_by = 12
 
-    def get_queryset(self) -> list[Product]:
+    def get_queryset(self):
         """
         Метод для фильтрации по запросу.
 
@@ -55,17 +70,15 @@ class IndexListView(ListView):
         """
 
         query = self.request.GET.get('search')
-        queryset = Product.objects.filter(
-            status__in=[
-                ProductStatus.ACTIVE,
-                ProductStatus.ARCHIVE
-            ]
-        )
+        queryset = services
 
         if query:
-            queryset = queryset.filter(title__icontains=query)
-
-        queryset = queryset.order_by('title')
+            queryset = [
+                *filter(
+                    lambda service: query in service['title'],
+                    queryset,
+                )
+            ]
 
         return queryset
 
@@ -74,23 +87,12 @@ class IndexListView(ListView):
         Добавляем количество товаров в корзине в контекст.
         """
         context = super().get_context_data(**kwargs)
-        user = self.request.user
 
-        if not user.is_authenticated:
-            return context
-
-        cart_items_count = 0
-        cart_items = CartItem.objects.filter(cart__user=user)
-
-        for item in cart_items:
-            cart_items_count += item.quantity
-
-        context['cart_items_count'] = cart_items_count
+        context['cart_items_count'] = len(bid)
         return context
 
 
-class ProductDetailView(DetailView):
-    model = Product
+class ServiceDetailView(DetailView):
     template_name = 'pages/product_detail.html'
     pk_url_kwarg = 'product_id'
 
@@ -99,16 +101,6 @@ class ProductDetailView(DetailView):
         Добавляем количество товаров в корзине в контекст.
         """
         context = super().get_context_data(**kwargs)
-        user = self.request.user
 
-        if not user.is_authenticated:
-            return context
-
-        cart_items_count = 0
-        cart_items = CartItem.objects.filter(cart__user=user)
-
-        for item in cart_items:
-            cart_items_count += item.quantity
-
-        context['cart_items_count'] = cart_items_count
+        context['cart_items_count'] = len(bid)
         return context
