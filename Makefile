@@ -1,6 +1,7 @@
 MANAGE_FILE_PATH=backend/manage.py
 
 
+
 run:
 	sudo systemctl start minio
 	python $(MANAGE_FILE_PATH) runserver
