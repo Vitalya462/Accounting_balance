@@ -16,22 +16,61 @@ def csrf_failure(request, reason=''):
     return render(request, 'errors/403csrf.html', status=403)
 
 
+description = '1) оформление первичных документов, определение первоначальной стоимости и отражение в бухгалтерском учёте.\n 2) расчет и начисление износа, корректировка при изменении срока полезного использования. \n 3) проведение переоценки ОС с отражением дооценки/уценки в балансе. \n 4) разграничение затрат на ремонт и модернизации, корректное отражение в учёте. \n 5) организация сверки фактического наличия ОС с данными учета, выявление излишков или недостатков. \n 6) оформление документов при ликвидации, продаже или передаче ОС, отражение финансового результата. \n 7) контроль соответствия бухгалтерского и налогового учета. \n 8) формирование данных для бухгалтерской и налоговой отчётности.'
+
+
 services = [
     {
         'id': 1,
-        'title': 'Первая услуга',
-        'description': 'Описание первой услуги',
-        'image': '',
+        'title': 'Основные средства',
+        'description': description,
+        'image': 'https://mimigram.ru/wp-content/uploads/2020/07/chto-takoe-foto.jpg',
         'price': 1234,
         'created_at': datetime.now(),
         'work_format': None,
         'industry': None,
         'status': 'A',
         'code': 123,
-    }
+    },
+    {
+        'id': 2,
+        'title': 'Запасы',
+        'description': description,
+        'image': 'https://mimigram.ru/wp-content/uploads/2020/07/chto-takoe-foto.jpg',
+        'price': 1234,
+        'created_at': datetime.now(),
+        'work_format': None,
+        'industry': None,
+        'status': 'A',
+        'code': 123,
+    },
+    {
+        'id': 3,
+        'title': 'Уставный капитал',
+        'description': description,
+        'image': 'https://mimigram.ru/wp-content/uploads/2020/07/chto-takoe-foto.jpg',
+        'price': 1234,
+        'created_at': datetime.now(),
+        'work_format': None,
+        'industry': None,
+        'status': 'A',
+        'code': 123,
+    },
+    {
+        'id': 4,
+        'title': 'Долгосрочные кредиты и займы',
+        'description': description,
+        'image': 'https://mimigram.ru/wp-content/uploads/2020/07/chto-takoe-foto.jpg',
+        'price': 1234,
+        'created_at': datetime.now(),
+        'work_format': None,
+        'industry': None,
+        'status': 'A',
+        'code': 123,
+    },
 ]
 
-bid = []
+bid = {}
 
 
 class IndexListView(ListView):
@@ -94,13 +133,23 @@ class IndexListView(ListView):
 
 class ServiceDetailView(DetailView):
     template_name = 'pages/product_detail.html'
+    context_object_name = 'product'
     pk_url_kwarg = 'product_id'
 
-    def get_context_data(self, **kwargs):
-        """
-        Добавляем количество товаров в корзине в контекст.
-        """
-        context = super().get_context_data(**kwargs)
+    def get_object(self, queryset=None):
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        try:
+            pk = int(pk)
+        except (TypeError, ValueError):
+            raise RuntimeError
 
+        for service in services:
+            if service['id'] == pk:
+                return service
+
+        raise RuntimeError
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['cart_items_count'] = len(bid)
         return context
