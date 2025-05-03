@@ -5,7 +5,6 @@ from django.db import models
 from minio_storage.storage import MinioMediaStorage
 
 from product_components import models as product_component_models
-from .enums import ProductStatus
 
 
 class Product(models.Model):
@@ -78,11 +77,6 @@ class Product(models.Model):
         null=True,
         blank=True,
         verbose_name='Сфера деятельности',
-    )
-
-    status = models.CharField(
-        'Статус товара',
-        choices=ProductStatus,
     )
 
     class Meta:

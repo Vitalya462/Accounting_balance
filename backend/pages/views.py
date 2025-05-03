@@ -3,7 +3,6 @@ from django.views.generic import ListView, DetailView
 
 from cart.models import CartItem
 from products.models import Product
-from products.enums import ProductStatus
 
 
 def page_not_found(request, exception):
@@ -55,12 +54,7 @@ class IndexListView(ListView):
         """
 
         query = self.request.GET.get('search')
-        queryset = Product.objects.filter(
-            status__in=[
-                ProductStatus.ACTIVE,
-                ProductStatus.ARCHIVE
-            ]
-        )
+        queryset = Product.objects.all()
 
         if query:
             queryset = queryset.filter(title__icontains=query)
