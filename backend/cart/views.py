@@ -8,6 +8,8 @@ from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin, DestroyM
 from rest_framework.decorators import action, permission_classes
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
+from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
 
 from web_shop.perms import IsModerator
 
@@ -37,12 +39,19 @@ class CartViewSet(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, Gener
         serializer = self.get_serializer(filtered_queryset, many=True)
         return Response(data=serializer.data)
 
+    @extend_schema(responses=CartRETRIEVESerializer)
     def retrieve(self, request, *args, **kwargs):
         cart = self.get_object()
         serializer = CartRETRIEVESerializer(instance=cart)
         return Response(serializer.data)
 
-    @extend_schema(request=None, responses={'detail': str})
+    def get_permissions(self):
+        perms = super().get_permissions()
+        if self.action in ('reject_cart', 'complete_cart', ):
+            perms += [IsModerator()]
+        return perms
+
+    @extend_schema(request=None)
     @action(methods=['put', ], detail=True, url_name='forming')
     def form_cart(self, request, pk, *args, **kwargs):
         cart = self.get_object()
@@ -53,28 +62,33 @@ class CartViewSet(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, Gener
             return Response({'detail': 'Корзина сформирована'})
         return Response({'detail': 'Только создатель корзины может ее сформировать'}, status=status.HTTP_403_FORBIDDEN)
 
-    @extend_schema(request=None, responses={'detail': str})
-    @permission_classes((IsModerator, ))
+    def check_formed(self, cart):
+        if not cart.status == CartStatus.FORMED:
+            raise ValidationError('Корзина еще не сформирована')
+
+    @extend_schema(request=None)
     @action(methods=['put', ], detail=True, url_name='reject')
     def reject_cart(self, request, pk, *args, **kwargs):
         cart = self.get_object()
+        self.check_formed(cart)
         user = request.user
         cart.moderator = user
         cart.status = CartStatus.REJECTED
         cart.save()
-        return Response({'detail': 'Корзина отклонена'}, status=status.HTTP_200_OK)
+        return Response({'detail': 'Корзина отклонена'})
 
     @extend_schema(request=None, responses={'detail': str})
-    @permission_classes((IsModerator, ))
     @action(methods=['put', ], detail=True, url_name='complete')
     def complete_cart(self, request, pk, *args, **kwargs):
         cart = self.get_object()
+        self.check_formed(cart)
         user = request.user
         cart.moderator == user
         cart.status = CartStatus.COMPLETED
         cart.save()
         return Response({'detail': 'Корзина завершена'}, status=status.HTTP_200_OK)
 
+    @extend_schema(responses=CartSerializer)
     @action(methods=['get', ], detail=False, url_path='my_draft_cart', url_name='my-draft-cart')
     def my_draft_cart(self, request, *args, **kwargs):
         user = request.user

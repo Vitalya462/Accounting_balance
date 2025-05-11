@@ -2,6 +2,7 @@ Django
 django-debug-toolbar
 django-bootstrap5
 django-environ
+django-redis
 psycopg2
 django-minio-storage
 djangorestframework
@@ -11,4 +12,5 @@ drf-spectacular
 drf-writable-nested
 pillow
 python-dotenv
+redis
 tzdata
