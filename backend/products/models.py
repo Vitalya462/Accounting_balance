@@ -43,7 +43,7 @@ class Product(models.Model):
 
     image = models.ImageField(
         'Картинка',
-        storage=MinioMediaStorage,
+        storage=MinioMediaStorage(),
     )
 
     price = models.DecimalField(
@@ -82,6 +82,10 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
+
+    def delete(self, *args, **kwargs):
+        self.image.delete(save=False)
+        return super().delete(*args, **kwargs)
 
     def __str__(self) -> str:
         return self.title

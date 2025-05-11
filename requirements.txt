@@ -1,0 +1,14 @@
+Django
+django-debug-toolbar
+django-bootstrap5
+django-environ
+psycopg2
+django-minio-storage
+djangorestframework
+djangorestframework_simplejwt
+drf-nested-routers
+drf-spectacular
+drf-writable-nested
+pillow
+python-dotenv
+tzdata

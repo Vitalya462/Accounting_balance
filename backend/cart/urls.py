@@ -1,28 +1,18 @@
-from django.urls import path
-from .views import cart_view, add_to_cart, remove_from_cart, update_cart
+from django.urls import path, include
+
+from . import views
+
+from rest_framework.routers import SimpleRouter
 
 
-app_name = 'cart'
+cart_router = SimpleRouter()
+cart_router.register('', views.CartViewSet, basename='carts')
+
+cart_item_router = SimpleRouter()
+cart_item_router.register(
+    'product', views.CartItemViewSet, basename='cart_item')
 
 urlpatterns = [
-    path(
-        'cart/',
-        cart_view,
-        name='cart_view',
-    ),
-    path(
-        'add/<int:product_id>/',
-        add_to_cart,
-        name='add_to_cart',
-    ),
-    path(
-        'remove/<int:product_id>/',
-        remove_from_cart,
-        name='remove_from_cart',
-    ),
-    path(
-        'update/<int:product_id>/<str:action>/',
-        update_cart,
-        name='update_cart',
-    ),
+    path('', include(cart_item_router.urls)),
+    path('', include(cart_router.urls))
 ]

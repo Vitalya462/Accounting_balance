@@ -1,10 +1,10 @@
-from django.conf import settings
-from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import include, path, reverse_lazy
 from django.views.generic.edit import CreateView
 from debug_toolbar import urls as debug_toolbar_urls
+
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 
 urlpatterns = [
@@ -14,18 +14,15 @@ urlpatterns = [
     ),
 
     path(
-        '',
-        include('pages.urls')
+        'products/',
+        include('products.urls')
     ),
 
-    path(
-        '',
-        include('cart.urls'),
-    ),
+    path('carts/', include('cart.urls')),
 
     path(
         'auth/',
-        include('django.contrib.auth.urls')
+        include('auth.urls')
     ),
 
     path(
@@ -42,7 +39,7 @@ urlpatterns = [
         '__debug__/',
         include(debug_toolbar_urls)
     ),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-handler404 = 'pages.views.page_not_found'
-handler500 = 'pages.views.server_error'
+    path('schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('docs/', SpectacularSwaggerView.as_view(url_name='schema'),
+         name='swagger-ui'),
+]

@@ -13,3 +13,6 @@ class CartAdmin(admin.ModelAdmin):
     """Класс для отображения корзины в админ панели."""
 
     inlines = (CartItemInline,)
+
+
+admin.site.register(models.CartItem)

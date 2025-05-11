@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 from products.models import Product
 from .enums import CartStatus
@@ -38,7 +39,13 @@ class Cart(models.Model):
 
     created_at = models.DateTimeField(
         'Добавлено',
-        auto_now_add=True,
+        auto_now_add=True
+    )
+
+    formed_at = models.DateTimeField(
+        'Сформировано',
+        null=True,
+        default=None
     )
 
     finished_at = models.DateTimeField(
@@ -61,6 +68,14 @@ class Cart(models.Model):
 
     def __str__(self):
         return f'Корзина {self.user.username}'
+
+    def save(self, *args, **kwargs):
+        if self.status == CartStatus.FORMED and not self.formed_at:
+            self.formed_at = timezone.now()
+        if (self.status == CartStatus.COMPLETED or self.status == CartStatus.REJECTED) and not self.finished_at:
+            self.finished_at = timezone.now()
+
+        return super().save(*args, **kwargs)
 
 
 class CartItem(models.Model):

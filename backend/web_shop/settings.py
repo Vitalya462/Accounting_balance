@@ -1,13 +1,16 @@
-from os import environ
+import os
 
 from pathlib import Path
 from datetime import timedelta
 
+from dotenv import load_dotenv
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'dfdfsfsfsfsf'
+load_dotenv()
+SECRET_KEY = os.getenv("SECRET_KEY")
 
-DEBUG = True
+DEBUG = os.getenv("DEBUG")
 
 INTERNAL_IPS = [
     '127.0.0.1',
@@ -26,12 +29,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
+    'drf_spectacular',
     'django_bootstrap5',
     'minio_storage',
     'cart',
     'product_components',
     'products',
-    'pages',
 ]
 
 MIDDLEWARE = [
@@ -45,17 +49,15 @@ MIDDLEWARE = [
 ]
 
 if DEBUG:
-    INSTALLED_APPS.append("debug_toolbar.urls")
+    INSTALLED_APPS.append("debug_toolbar")
     MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
 
 ROOT_URLCONF = 'web_shop.urls'
 
-TEMPLATES_DIR = BASE_DIR / 'templates'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATES_DIR],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,11 +76,11 @@ WSGI_APPLICATION = 'web_shop.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": 'web_shop',
-        "USER": 'postgres',
-        "PASSWORD": 'postgres',
-        "HOST": 'localhost',
-        "PORT": '5432',
+        "NAME": os.getenv("POSTGRES_DB"),
+        "USER": os.getenv("POSTGRES_USER"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+        "HOST": os.getenv("POSTGRES_HOST"),
+        "PORT": os.getenv("POSTGRES_PORT"),
         "ATOMIC_REQUESTS": True,
     }
 }
@@ -110,28 +112,18 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATICFILES_DIRS = [BASE_DIR / 'static']
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MEDIA_URL = 'media/'
-
-MEDIA_ROOT = BASE_DIR / 'media'
-
-
-CSRF_FAILURE_VIEW = 'pages.views.csrf_failure'
-
-LOGIN_URL = 'login'
-
-LOGIN_REDIRECT_URL = 'pages:index'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
 }
 
 SIMPLE_JWT = {
@@ -139,14 +131,25 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API Schema',
+    'DESCRIPTION': 'Guide for the REST API',
+    'VERSION': '1.0.0',
+}
+
+
 DEFAULT_FILE_STORAGE = "minio_storage.storage.MinioMediaStorage"
 STATICFILES_STORAGE = "minio_storage.storage.MinioStaticStorage"
-MINIO_STORAGE_ENDPOINT = '127.0.0.1:9199'
-MINIO_STORAGE_ACCESS_KEY = 'wM7aYRDQFnMA4jC4KhSt'
-MINIO_STORAGE_SECRET_KEY = 'd4GkPLdeZ3bfHdulqE4PlMWbuD24ETdtAoM5hgQZ'
+MINIO_STORAGE_ENDPOINT = os.getenv("MINIO_STORAGE_ENDPOINT")
+MINIO_STORAGE_ACCESS_KEY = os.getenv("MINIO_STORAGE_ACCESS_KEY")
+MINIO_STORAGE_SECRET_KEY = os.getenv("MINIO_STORAGE_SECRET_KEY")
 MINIO_STORAGE_USE_HTTPS = False
 MINIO_STORAGE_MEDIA_OBJECT_METADATA = {"Cache-Control": "max-age=1000"}
 MINIO_STORAGE_MEDIA_BUCKET_NAME = 'local-media'
-MINIO_STORAGE_MEDIA_BACKUP_BUCKET = 'Recycle Bin'
-MINIO_STORAGE_MEDIA_BACKUP_FORMAT = '%c/'
+MINIO_STORAGE_MEDIA_BACKUP_BUCKET = None
+MINIO_STORAGE_MEDIA_BACKUP_FORMAT = None
 MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET = True
+
+SESSION_COOKIE_AGE = 1209600
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = False
