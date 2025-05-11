@@ -5,11 +5,10 @@ from .enums import CartStatus
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
-from rest_framework.decorators import action, permission_classes
+from rest_framework.decorators import action
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
 from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import IsAuthenticated
 
 from web_shop.perms import IsModerator
 
