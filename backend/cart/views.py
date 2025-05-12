@@ -24,8 +24,9 @@ class CartViewSet(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, Gener
         status = request.query_params.get('status', None)
         queryset = self.get_queryset()
         if status:
-            queryset = queryset.filter(status=status)
-        filtered_queryset = queryset.exclude(status__in=('D', 'DEL', ))
+            filtered_queryset = queryset.filter(status=status)
+        if not request.user.is_staff:
+            filtered_queryset = queryset.exclude(status__in=('D', 'DEL', ))
         date_from = request.query_params.get('from', None)
         date_to = request.query_params.get('to', None)
         if date_from:
