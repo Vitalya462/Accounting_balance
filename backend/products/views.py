@@ -44,7 +44,8 @@ class ProductViewSet(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, Cr
         image = image_serializer.validated_data['image']
         product = self.get_object()
         storage = MinioMediaStorage()
-        storage.delete(product.image.name)
+        if product.image.name:
+            storage.delete(product.image.name)
         product.image = image
         product.save()
 
