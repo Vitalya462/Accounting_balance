@@ -4,7 +4,7 @@ from products.models import Product
 from products.serializers import ProductGETSerializer, ProductPOSTSerializer, ProductImageSerializer, ProductPUTSerializer
 
 from rest_framework.viewsets import GenericViewSet
-from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, CreateModelMixin
+from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, CreateModelMixin, ListModelMixin
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -13,7 +13,7 @@ from drf_spectacular.utils import extend_schema
 from minio_storage.storage import MinioMediaStorage
 
 
-class ProductViewSet(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, CreateModelMixin, GenericViewSet):
+class ProductViewSet(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, ListModelMixin, CreateModelMixin, GenericViewSet):
     queryset = Product.objects.all()
     http_method_names = ('get', 'post', 'put', 'delete')
 

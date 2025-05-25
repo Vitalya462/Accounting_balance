@@ -32,5 +32,7 @@ class ProductGETSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         rep = super().to_representation(instance)
-        rep['image'] = rep['image'].replace('http://minio', 'http://localhost')
+        if rep.get('image', None):
+            rep['image'] = rep['image'].replace(
+                'http://minio', 'http://localhost')
         return rep

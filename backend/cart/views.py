@@ -24,19 +24,20 @@ class CartViewSet(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, Gener
         status = request.query_params.get('status', None)
         queryset = self.get_queryset()
         if status:
-            filtered_queryset = queryset.filter(status=status)
+            queryset = queryset.filter(status=status)
         if not request.user.is_staff:
-            filtered_queryset = queryset.exclude(status__in=('D', 'DEL', ))
+            queryset = queryset.filter(
+                user=request.user).exclude(status__in=('DEL', ))
         date_from = request.query_params.get('from', None)
         date_to = request.query_params.get('to', None)
         if date_from:
-            filtered_queryset = filtered_queryset.filter(
+            queryset = filtered_querquerysetyset.filter(
                 created_at__gte=date_from)
         if date_to:
-            filtered_queryset = filtered_queryset.filter(
+            queryset = queryset.filter(
                 created_at__lte=date_to)
 
-        serializer = self.get_serializer(filtered_queryset, many=True)
+        serializer = self.get_serializer(queryset, many=True)
         return Response(data=serializer.data)
 
     @extend_schema(responses=CartRETRIEVESerializer)
