@@ -2,6 +2,7 @@ MANAGE_FILE_PATH=backend/manage.py
 
 
 
+
 run:
 	python $(MANAGE_FILE_PATH) runserver
 
