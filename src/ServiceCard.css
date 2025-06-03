@@ -1,0 +1,65 @@
+.service-card {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 300px;
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.service-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Title at the bottom */
+.service-card-title {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.7); /* Dark overlay for better readability */
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Hide title on hover */
+.service-card:hover .service-card-title {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Overlay with additional info — hidden by default */
+.service-card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Show overlay on hover */
+.service-card:hover .service-card-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+.service-card-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: auto; /* Align buttons to the bottom */
+}
+
+.interest-button {
+  background-color: #FF6B6B;
+  border-color: #FF6B6B;
+  color: #fff;
+}

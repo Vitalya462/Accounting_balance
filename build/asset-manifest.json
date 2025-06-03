@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/sixth_lab/static/css/main.f5e08d1f.css",
+    "main.js": "/sixth_lab/static/js/main.40535b3c.js",
+    "index.html": "/sixth_lab/index.html",
+    "main.f5e08d1f.css.map": "/sixth_lab/static/css/main.f5e08d1f.css.map",
+    "main.40535b3c.js.map": "/sixth_lab/static/js/main.40535b3c.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f5e08d1f.css",
+    "static/js/main.40535b3c.js"
+  ]
+}

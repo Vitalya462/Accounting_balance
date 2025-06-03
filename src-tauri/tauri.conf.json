@@ -1,0 +1,23 @@
+{
+  "build": {
+    "distDir": "../build",
+    "devPath": "http://localhost:3000"
+  },
+  "allowlist": {
+    "all": true,
+    "fs": { "readDir": true },
+    "http": {
+      "all": true,
+      "cors": true
+    }
+  },
+  "tauri": {
+    "allowlist": {
+      "all": true
+    },
+    "http": {
+      "all": true,
+      "cors": true
+    }
+  }
+}
